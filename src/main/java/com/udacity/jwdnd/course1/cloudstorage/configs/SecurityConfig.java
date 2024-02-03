@@ -22,9 +22,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // "h2-console": Login to h2database. Use in dev mode only
         http.authorizeRequests()
-                .antMatchers("/signup", "/css/**", "/js/**").permitAll()
+                .antMatchers( "/h2-console/**", "/signup", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated();
+        // Allow CSRF for h2database. Sse in dev mode only
+        http.csrf().ignoringAntMatchers("/h2-console/**");
+        http.headers().frameOptions().sameOrigin();
 
         http.formLogin()
                 .loginPage("/login")
