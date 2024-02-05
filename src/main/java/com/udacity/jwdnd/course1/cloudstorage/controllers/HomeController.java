@@ -18,8 +18,7 @@ public class HomeController {
     }
     @GetMapping
     public String getHomePage(Authentication authentication, Model model) {
-        String userName = authentication.getName();
-        Integer userId = userService.getUserId(userName);
+        Integer userId = userService.getUserId(authentication);
         String[] files = fileUploadService.getFileNameList(userId);
         model.addAttribute("files", files);
         return "home";

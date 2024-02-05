@@ -39,4 +39,10 @@ public class FileUploadService {
             e.printStackTrace();
         }
     }
+    public File getFile(String fileName, Integer userId) {
+        return fileMapper.getFile(fileName, userId);
+    }
+    public void deleteFile(String fileName, Integer userId) {
+        fileMapper.delete(fileName, userId);
+    }
 }

@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.services;
 import com.udacity.jwdnd.course1.cloudstorage.mappers.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.models.User;
 import com.udacity.jwdnd.course1.cloudstorage.dataForms.UserForm;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -33,7 +34,8 @@ public class UserService {
         return userMapper.insert(newUser);
     }
 
-    public Integer getUserId(String userName) {
+    public Integer getUserId(Authentication authentication) {
+        String userName = authentication.getName();
         return userMapper.getUser(userName).getUserId();
     }
 }
