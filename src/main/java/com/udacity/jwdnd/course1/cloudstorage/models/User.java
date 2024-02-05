@@ -3,7 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.models;
 import java.util.UUID;
 
 public class User {
-    private UUID userId;
+    private Integer userId;
     private String userName;
     private String salt;
     private String password;
@@ -11,7 +11,6 @@ public class User {
     private String lastName;
 
     public User(String userName, String salt, String password, String firstName, String lastName) {
-        this.userId = UUID.randomUUID();
         this.userName = userName;
         this.salt = salt;
         this.password = password;
@@ -19,11 +18,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public UUID getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

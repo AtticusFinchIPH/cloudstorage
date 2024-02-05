@@ -1,6 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
-import com.udacity.jwdnd.course1.cloudstorage.models.UserForm;
+import com.udacity.jwdnd.course1.cloudstorage.dataForms.UserForm;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.stereotype.Controller;
