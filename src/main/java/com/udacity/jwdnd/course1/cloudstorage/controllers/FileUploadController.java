@@ -27,20 +27,20 @@ public class FileUploadController {
         this.userService = userService;
     }
     @PostMapping
-    public String handleFileUpload(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication authentication, Model model){
+    public String handleFileUpload(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication authentication, RedirectAttributes redirectAttributes){
         if (fileUpload.isEmpty()) {
-            model.addAttribute("error", "Can not upload an empty file, please try again.");
-            return "result";
+            redirectAttributes.addFlashAttribute("message", "Can not upload an empty file, please try again.");
+            return "redirect:/home";
         }
         Integer userId = userService.getUserId(authentication);
         String fileName = fileUpload.getOriginalFilename();
         if(fileUploadService.isFileNameExisted(userId, fileName)) {
-            model.addAttribute("error", "File name is already existed, please try again.");
-            return "result";
+            redirectAttributes.addFlashAttribute("message", "File name is already existed, please try again.");
+            return "redirect:/home";
         }
         fileUploadService.saveFile(fileUpload, userId);
-        model.addAttribute("isSuccess", true);
-        return "result";
+        redirectAttributes.addFlashAttribute("message", "Upload file successfully!");
+        return "redirect:/home";
     }
     @GetMapping("/download/{fileName}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable("fileName") String fileName, Authentication authentication){
@@ -54,9 +54,10 @@ public class FileUploadController {
         return responseEntity;
     }
     @GetMapping("/delete/{fileName}")
-    public String deleteFile(@PathVariable("fileName") String fileName, Authentication authentication) {
+    public String deleteFile(@PathVariable("fileName") String fileName, Authentication authentication, RedirectAttributes redirectAttributes) {
         Integer userId = userService.getUserId(authentication);
         fileUploadService.deleteFile(fileName, userId);
+        redirectAttributes.addFlashAttribute("message", "Delete file successfully!");
         return "redirect:/home";
     }
 }

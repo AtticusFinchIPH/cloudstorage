@@ -5,6 +5,7 @@ public class Note {
     private String noteTitle;
     private String noteDescription;
     private Integer userId;
+    public  Note(){}
 
     public Note(String noteTitle, String noteDescription, Integer userId) {
         this.noteTitle = noteTitle;
