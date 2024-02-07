@@ -78,14 +78,15 @@
                                 <tbody>
                                     <tr th:each="note : ${notes}">
                                         <td>
-                                            <button type="button" class="btn btn-success">Edit</button>
-                                            <a class="btn btn-danger">Delete</a>
+                                            <a th:href="@{/note/__${note.noteId}__}" class="btn btn-success">Edit</a>
+                                            <a th:href="@{/note/delete/__${note.noteId}__}"  class="btn btn-danger">Delete</a>
                                         </td>
                                         <th th:text="${note.noteTitle}" scope="row">Example Note Title</th>
                                         <td th:text="${note.noteDescription}">Example Note Description </td>
                                     </tr>
                                 </tbody>
                             </table>
+                            <div th:if="${#lists.isEmpty(notes)}"  style="text-align: center">No note available</div>
                         </div>
 
                         <div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
@@ -99,7 +100,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <form action="#" th:action="@{/note}" method="POST" th:object="${newNote}">
-                                            <input type="hidden" name="noteId" id="note-id">
+                                            <input th:field="*{noteId}" type="hidden" name="noteId" id="note-id">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Title</label>
                                                 <input th:field="*{noteTitle}" type="text" name= "noteTitle" class="form-control" id="note-title" maxlength="20" required>
@@ -146,6 +147,7 @@
                                 </tr>
                                 </tbody>
                             </table>
+                            <div th:if="${#lists.isEmpty(credentials)}"  style="text-align: center">No credential available</div>
                         </div>
 
                         <div class="modal fade" id="credentialModal" tabindex="-1" role="dialog" aria-labelledby="credentialModalLabel" aria-hidden="true">
@@ -215,6 +217,12 @@
                 $('#credential-password').val(password ? password : '');
                 $('#credentialModal').modal('show');
             }
+        </script>
+
+        '<!--Open note modal on view detail-->
+        <script th:inline="javascript">
+            var noteForm = [[${noteForm}]];
+            if(noteForm) showNoteModal(noteForm.noteId, noteForm.noteTitle, noteForm.noteDescription);
         </script>
     </body>
 </html>

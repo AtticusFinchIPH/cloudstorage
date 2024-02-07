@@ -86,6 +86,7 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <div th:if="${#lists.isEmpty(notes)}"  style="text-align: center">No note available</div>
                         </div>
 
                         <div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
@@ -146,6 +147,7 @@
                                 </tr>
                                 </tbody>
                             </table>
+                            <div th:if="${#lists.isEmpty(credentials)}"  style="text-align: center">No credential available</div>
                         </div>
 
                         <div class="modal fade" id="credentialModal" tabindex="-1" role="dialog" aria-labelledby="credentialModalLabel" aria-hidden="true">
