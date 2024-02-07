@@ -14,13 +14,16 @@ public class NoteService {
     public Note[] getNoteList(Integer userId) {
         return noteMapper.getNoteList(userId);
     }
-    public Note getNoteById(Integer noteId) {
-        return noteMapper.getNoteById(noteId);
+    public Note getNoteById(Integer userId, Integer noteId) {
+        return noteMapper.getNoteById(userId, noteId);
     }
     public int createNote(Note note){
         return noteMapper.insert(note);
     }
-    public void deleteNoteById(Integer noteId) {
-        noteMapper.delete(noteId);
+    public int updateNote(Note note) {
+        return noteMapper.update(note);
+    }
+    public void deleteNoteById(Integer userId, Integer noteId) {
+        noteMapper.delete(userId, noteId);
     }
 }
