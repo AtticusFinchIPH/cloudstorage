@@ -21,13 +21,14 @@ public class CredentialService {
         this.encryptionService = encryptionService;
     }
     public Credential[] getCredentialList(Integer userId) {
-        Credential[] credentials = Arrays.asList(credentialMapper.getCredentialListByUserId(userId)).stream().map(credential -> {
-            String encryptedPassword = credential.getPassword();
-            String encodedKey = credential.getKey();
-            String decryptedPassword = encryptionService.decryptValue(encryptedPassword, encodedKey);
-            credential.setPassword(decryptedPassword);
-            return credential;
-        }).toArray(Credential[] ::new);
+//        Credential[] credentials = Arrays.asList(credentialMapper.getCredentialListByUserId(userId)).stream().map(credential -> {
+//            String encryptedPassword = credential.getPassword();
+//            String encodedKey = credential.getKey();
+//            String decryptedPassword = encryptionService.decryptValue(encryptedPassword, encodedKey);
+//            credential.setPassword(decryptedPassword);
+//            return credential;
+//        }).toArray(Credential[] ::new);
+        Credential[] credentials = credentialMapper.getCredentialListByUserId(userId);
         return credentials;
     }
     public Credential getCredentialById(Integer userId, Integer credentialId) {

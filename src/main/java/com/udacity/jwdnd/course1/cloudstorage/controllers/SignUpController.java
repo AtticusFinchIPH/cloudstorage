@@ -44,7 +44,7 @@ public class SignUpController {
             model.addAttribute("signupError", signupError);
             return "signup";
         } else {
-            redirectAttributes.addAttribute("signup", true);
+            redirectAttributes.addFlashAttribute("signup", true);
             return "redirect:/login";
         }
     }
