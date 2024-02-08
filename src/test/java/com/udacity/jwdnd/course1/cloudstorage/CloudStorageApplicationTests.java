@@ -7,6 +7,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,35 +16,35 @@ import org.springframework.boot.web.server.LocalServerPort;
 import java.io.File;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
-
 	@LocalServerPort
 	private int port;
-
+	private static ChromeOptions chromeOptions;
 	private WebDriver driver;
-
 	@BeforeAll
 	static void beforeAll() {
-		WebDriverManager.chromedriver().setup();
-	}
+//		WebDriverManager.chromedriver().setup();
+		/* Incompatible Chrome version, so I need to download Chromium to test locally */
+		System.setProperty("webdriver.chrome.driver", "C:\\Users\\tranv\\Downloads\\Software\\chromedriver_win32\\chromedriver.exe");
+		chromeOptions = new ChromeOptions();
+		chromeOptions.setBinary("C:\\Users\\tranv\\Downloads\\Software\\chrome-win64\\chrome.exe");
 
+
+	}
 	@BeforeEach
 	public void beforeEach() {
-		this.driver = new ChromeDriver();
+		driver = new ChromeDriver(chromeOptions);
 	}
-
 	@AfterEach
 	public void afterEach() {
 		if (this.driver != null) {
 			driver.quit();
 		}
 	}
-
 	@Test
 	public void getLoginPage() {
 		driver.get("http://localhost:" + this.port + "/login");
 		Assertions.assertEquals("Login", driver.getTitle());
 	}
-
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
@@ -86,11 +87,8 @@ class CloudStorageApplicationTests {
 		// You may have to modify the element "success-msg" and the sign-up 
 		// success message below depening on the rest of your code.
 		*/
-		Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
+		Assertions.assertTrue(driver.findElement(By.id("signup-success-msg")).getText().contains("You successfully signed up!"));
 	}
-
-	
-	
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.
@@ -138,7 +136,6 @@ class CloudStorageApplicationTests {
 		// Check if we have been redirected to the log in page.
 		Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
 	}
-
 	/**
 	 * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the 
 	 * rest of your code. 
@@ -161,8 +158,6 @@ class CloudStorageApplicationTests {
 		driver.get("http://localhost:" + this.port + "/some-random-page");
 		Assertions.assertFalse(driver.getPageSource().contains("Whitelabel Error Page"));
 	}
-
-
 	/**
 	 * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the 
 	 * rest of your code. 
@@ -199,7 +194,4 @@ class CloudStorageApplicationTests {
 		Assertions.assertFalse(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
 
 	}
-
-
-
 }
