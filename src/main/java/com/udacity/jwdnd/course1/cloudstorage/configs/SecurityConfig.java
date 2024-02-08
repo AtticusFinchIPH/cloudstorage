@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers( "/h2-console/**", "/signup", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated();
-        // Allow CSRF for h2database. Sse in dev mode only
+        // Allow CSRF for h2database. Use in dev mode only
         http.csrf().ignoringAntMatchers("/h2-console/**");
         http.headers().frameOptions().sameOrigin();
 
@@ -39,6 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login");
+                .logoutSuccessUrl("/login?logout").permitAll();
     }
 }
