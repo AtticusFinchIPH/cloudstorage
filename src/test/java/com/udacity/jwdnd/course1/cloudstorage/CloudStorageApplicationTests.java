@@ -17,6 +17,10 @@ class CloudStorageApplicationTests {
 	private int port;
 	private static ChromeOptions chromeOptions;
 	private WebDriver driver;
+	private WebDriverWait webDriverWait;
+	private LoginPage loginPage;
+	private SignupPage signupPage;
+	private HomePage homePage;
 	@BeforeAll
 	static void beforeAll() {
 //		WebDriverManager.chromedriver().setup();
@@ -24,12 +28,14 @@ class CloudStorageApplicationTests {
 		System.setProperty("webdriver.chrome.driver", "C:\\Users\\tranv\\Downloads\\Software\\chromedriver_win32\\chromedriver.exe");
 		chromeOptions = new ChromeOptions();
 		chromeOptions.setBinary("C:\\Users\\tranv\\Downloads\\Software\\chrome-win64\\chrome.exe");
-
-
 	}
 	@BeforeEach
 	public void beforeEach() {
 		driver = new ChromeDriver(chromeOptions);
+		webDriverWait = new WebDriverWait(driver, 2);
+		loginPage = new LoginPage(driver);
+		signupPage = new SignupPage(driver);
+		homePage = new HomePage(driver, webDriverWait);
 	}
 	@AfterEach
 	public void afterEach() {
@@ -50,7 +56,6 @@ class CloudStorageApplicationTests {
 		// Create a dummy account for logging in later.
 
 		// Visit the sign-up page.
-		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 		driver.get("http://localhost:" + this.port + "/signup");
 		webDriverWait.until(ExpectedConditions.titleContains("Sign Up"));
 		
@@ -82,7 +87,7 @@ class CloudStorageApplicationTests {
 
 		/* Check that the sign up was successful. 
 		// You may have to modify the element "success-msg" and the sign-up 
-		// success message below depening on the rest of your code.
+		// success message below depending on the rest of your code.
 		*/
 		Assertions.assertTrue(driver.findElement(By.id("signup-success-msg")).getText().contains("You successfully signed up!"));
 	}
@@ -94,7 +99,6 @@ class CloudStorageApplicationTests {
 	{
 		// Log in to our dummy account.
 		driver.get("http://localhost:" + this.port + "/login");
-		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("inputUsername")));
 		WebElement loginUserName = driver.findElement(By.id("inputUsername"));
@@ -111,7 +115,6 @@ class CloudStorageApplicationTests {
 		loginButton.click();
 
 		webDriverWait.until(ExpectedConditions.titleContains("Home"));
-
 	}
 
 	/**
@@ -174,7 +177,6 @@ class CloudStorageApplicationTests {
 		doLogIn("LFT", "123");
 
 		// Try to upload an arbitrary large file
-		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 		String fileName = "upload5m.zip";
 
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fileUpload")));
@@ -193,4 +195,99 @@ class CloudStorageApplicationTests {
 		Assertions.assertFalse(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
 
 	}
+	/**
+	 * Test signup and login flow
+	 * Write a Selenium test that verifies that the home page is not accessible without logging in.
+	 */
+	@Test
+	public void testCanNotAccessHomePageWithoutLogin() {
+		driver.get("http://localhost:" + this.port + "/home");
+		Assertions.assertNotEquals("Home", driver.getTitle());
+		Assertions.assertEquals("Login", driver.getTitle());
+	}
+	/**
+	 * Test signup and login flow
+	 * Write a Selenium test that signs up a new user,
+	 * logs that user in, verifies that they can access the home page,
+	 * then logs out and verifies that the home page is no longer accessible.
+	 */
+	@Test
+	public void testSignupLoginLogout() {
+		driver.get("http://localhost:" + this.port + "/signup");
+		signupPage.signup("firstName", "lastName", "userName", "password");
+		Assertions.assertEquals("Login", driver.getTitle());
+		loginPage.login("userName", "password");
+		Assertions.assertEquals("Home", driver.getTitle());
+		homePage.clickLogout();
+		Assertions.assertNotEquals("Home", driver.getTitle());
+		Assertions.assertEquals("Login", driver.getTitle());
+		driver.get("http://localhost:" + this.port + "/home");
+		Assertions.assertNotEquals("Home", driver.getTitle());
+		Assertions.assertEquals("Login", driver.getTitle());
+	}
+	/**
+	 * Test adding, editing, and deleting notes
+	 * Write a Selenium test that logs in an existing user,
+	 * creates a note and verifies that the note details are visible in the note list.
+	 */
+	@Test
+	public void testCreatingNote() {
+		driver.get("http://localhost:" + this.port + "/login");
+		loginPage.login("userName", "password");
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+
+		homePage.switchToNoteTab();
+		homePage.createNote("Note title", "Note description");
+		webDriverWait.until(ExpectedConditions.alertIsPresent());
+		Alert alert = driver.switchTo().alert();
+		alert.accept();
+
+		Boolean isNoteFound = homePage.hasNote("Note title", "Note description");
+		Assertions.assertEquals(isNoteFound, true);
+	}
+	/**
+	 * Test adding, editing, and deleting notes
+	 * Write a Selenium test that logs in an existing user with existing notes,
+	 * clicks the edit note button on an existing note,
+	 * changes the note data, saves the changes,
+	 * and verifies that the changes appear in the note list.
+	 */
+	@Test
+	public void testEditingNote() {
+		driver.get("http://localhost:" + this.port + "/login");
+		loginPage.login("userName", "password");
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+
+		homePage.switchToNoteTab();
+		Boolean isNoteFound = homePage.hasNote("Note title", "Note description");
+		if(isNoteFound.equals(false)) {
+			homePage.createNote("Note title", "Note description");
+			webDriverWait.until(ExpectedConditions.alertIsPresent());
+			Alert alert = driver.switchTo().alert();
+			alert.accept();
+		}
+
+		WebElement matchedNote = homePage.getNote("Note title", "Note description");
+		homePage.editNote(matchedNote, "Note title", "Edited note description");
+
+		webDriverWait.until(ExpectedConditions.alertIsPresent());
+		Alert alert = driver.switchTo().alert();
+		alert.accept();
+
+		Boolean isEditedNoteFound = homePage.hasNote("Note title", "Edited note description");;
+		Assertions.assertEquals(isEditedNoteFound, true);
+	}
+	/**
+	 * Test adding, editing, and deleting notes
+	 * Write a Selenium test that logs in an existing user with existing notes,
+	 * clicks the delete note button on an existing note,
+	 * and verifies that the note no longer appears in the note list.
+	 */
+//	@Test
+//	public void testDeletingNote() {
+//		driver.get("http://localhost:" + this.port + "/login");
+//		loginPage.login("userName", "password");
+//		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+//
+//	}
 }
