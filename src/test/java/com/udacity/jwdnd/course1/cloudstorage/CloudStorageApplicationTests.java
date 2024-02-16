@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -89,6 +90,7 @@ class CloudStorageApplicationTests {
 		// You may have to modify the element "success-msg" and the sign-up 
 		// success message below depending on the rest of your code.
 		*/
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("signup-success-msg")));
 		Assertions.assertTrue(driver.findElement(By.id("signup-success-msg")).getText().contains("You successfully signed up!"));
 	}
 	/**
@@ -131,7 +133,11 @@ class CloudStorageApplicationTests {
 	@Test
 	public void testRedirection() {
 		// Create a test account
-		doMockSignUp("Redirection","Test","RT","123");
+		String randomFirstName = RandomStringUtils.randomAlphabetic(10);
+		String randomLastName = RandomStringUtils.randomAlphabetic(10);
+		String randomUserName = RandomStringUtils.randomAlphabetic(10);
+		String randomPassword = RandomStringUtils.randomAlphabetic(10);
+		doMockSignUp(randomFirstName, randomLastName, randomUserName, randomPassword);
 		
 		// Check if we have been redirected to the log in page.
 		Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
@@ -151,8 +157,12 @@ class CloudStorageApplicationTests {
 	@Test
 	public void testBadUrl() {
 		// Create a test account
-		doMockSignUp("URL","Test","UT","123");
-		doLogIn("UT", "123");
+		String randomFirstName = RandomStringUtils.randomAlphabetic(10);
+		String randomLastName = RandomStringUtils.randomAlphabetic(10);
+		String randomUserName = RandomStringUtils.randomAlphabetic(10);
+		String randomPassword = RandomStringUtils.randomAlphabetic(10);
+		doMockSignUp(randomFirstName, randomLastName, randomUserName, randomPassword);
+		doLogIn(randomUserName, randomPassword);
 		
 		// Try to access a random made-up URL.
 		driver.get("http://localhost:" + this.port + "/some-random-page");
@@ -173,8 +183,12 @@ class CloudStorageApplicationTests {
 	@Test
 	public void testLargeUpload() {
 		// Create a test account
-		doMockSignUp("Large File","Test","LFT","123");
-		doLogIn("LFT", "123");
+		String randomFirstName = RandomStringUtils.randomAlphabetic(10);
+		String randomLastName = RandomStringUtils.randomAlphabetic(10);
+		String randomUserName = RandomStringUtils.randomAlphabetic(10);
+		String randomPassword = RandomStringUtils.randomAlphabetic(10);
+		doMockSignUp(randomFirstName, randomLastName, randomUserName, randomPassword);
+		doLogIn(randomUserName, randomPassword);
 
 		// Try to upload an arbitrary large file
 		String fileName = "upload5m.zip";
@@ -214,9 +228,14 @@ class CloudStorageApplicationTests {
 	@Test
 	public void testSignupLoginLogout() {
 		driver.get("http://localhost:" + this.port + "/signup");
-		signupPage.signup("firstName", "lastName", "userName", "password");
+		// Create a test account
+		String randomFirstName = RandomStringUtils.randomAlphabetic(10);
+		String randomLastName = RandomStringUtils.randomAlphabetic(10);
+		String randomUserName = RandomStringUtils.randomAlphabetic(10);
+		String randomPassword = RandomStringUtils.randomAlphabetic(10);
+		signupPage.signup(randomFirstName, randomLastName, randomUserName, randomPassword);
 		Assertions.assertEquals("Login", driver.getTitle());
-		loginPage.login("userName", "password");
+		loginPage.login(randomUserName, randomPassword);
 		Assertions.assertEquals("Home", driver.getTitle());
 		homePage.clickLogout();
 		Assertions.assertNotEquals("Home", driver.getTitle());
@@ -232,8 +251,15 @@ class CloudStorageApplicationTests {
 	 */
 	@Test
 	public void testCreatingNote() {
-		driver.get("http://localhost:" + this.port + "/login");
-		loginPage.login("userName", "password");
+		driver.get("http://localhost:" + this.port + "/signup");
+		// Create a test account
+		String randomFirstName = RandomStringUtils.randomAlphabetic(10);
+		String randomLastName = RandomStringUtils.randomAlphabetic(10);
+		String randomUserName = RandomStringUtils.randomAlphabetic(10);
+		String randomPassword = RandomStringUtils.randomAlphabetic(10);
+		signupPage.signup(randomFirstName, randomLastName, randomUserName, randomPassword);
+		Assertions.assertEquals("Login", driver.getTitle());
+		loginPage.login(randomUserName, randomPassword);
 		webDriverWait.until(ExpectedConditions.titleContains("Home"));
 
 		homePage.switchToNoteTab();
@@ -254,8 +280,15 @@ class CloudStorageApplicationTests {
 	 */
 	@Test
 	public void testEditingNote() {
-		driver.get("http://localhost:" + this.port + "/login");
-		loginPage.login("userName", "password");
+		driver.get("http://localhost:" + this.port + "/signup");
+		// Create a test account
+		String randomFirstName = RandomStringUtils.randomAlphabetic(10);
+		String randomLastName = RandomStringUtils.randomAlphabetic(10);
+		String randomUserName = RandomStringUtils.randomAlphabetic(10);
+		String randomPassword = RandomStringUtils.randomAlphabetic(10);
+		signupPage.signup(randomFirstName, randomLastName, randomUserName, randomPassword);
+		Assertions.assertEquals("Login", driver.getTitle());
+		loginPage.login(randomUserName, randomPassword);
 		webDriverWait.until(ExpectedConditions.titleContains("Home"));
 
 		homePage.switchToNoteTab();
@@ -283,11 +316,143 @@ class CloudStorageApplicationTests {
 	 * clicks the delete note button on an existing note,
 	 * and verifies that the note no longer appears in the note list.
 	 */
-//	@Test
-//	public void testDeletingNote() {
-//		driver.get("http://localhost:" + this.port + "/login");
-//		loginPage.login("userName", "password");
-//		webDriverWait.until(ExpectedConditions.titleContains("Home"));
-//
-//	}
+	@Test
+	public void testDeletingNote() {
+		driver.get("http://localhost:" + this.port + "/signup");
+		// Create a test account
+		String randomFirstName = RandomStringUtils.randomAlphabetic(10);
+		String randomLastName = RandomStringUtils.randomAlphabetic(10);
+		String randomUserName = RandomStringUtils.randomAlphabetic(10);
+		String randomPassword = RandomStringUtils.randomAlphabetic(10);
+		signupPage.signup(randomFirstName, randomLastName, randomUserName, randomPassword);
+		Assertions.assertEquals("Login", driver.getTitle());
+		loginPage.login(randomUserName, randomPassword);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+
+		homePage.switchToNoteTab();
+		Boolean isNoteFound = homePage.hasNote("Note title", "Note description");
+		if(isNoteFound.equals(false)) {
+			homePage.createNote("Note title", "Note description");
+			webDriverWait.until(ExpectedConditions.alertIsPresent());
+			Alert alert = driver.switchTo().alert();
+			alert.accept();
+		}
+
+		WebElement matchedNote = homePage.getNote("Note title", "Note description");
+		homePage.deleteNote(matchedNote);
+
+		webDriverWait.until(ExpectedConditions.alertIsPresent());
+		Alert alert = driver.switchTo().alert();
+		alert.accept();
+	}
+	/**
+	 * Test adding, editing and deleting credentials
+	 * Write a Selenium test that logs in an existing user,
+	 * creates a credential and
+	 * verifies that the credential details are visible in the credential list.
+	 */
+	@Test
+	public void testCreatingCredential() {
+		driver.get("http://localhost:" + this.port + "/signup");
+		// Create a test account
+		String randomFirstName = RandomStringUtils.randomAlphabetic(10);
+		String randomLastName = RandomStringUtils.randomAlphabetic(10);
+		String randomUserName = RandomStringUtils.randomAlphabetic(10);
+		String randomPassword = RandomStringUtils.randomAlphabetic(10);
+		signupPage.signup(randomFirstName, randomLastName, randomUserName, randomPassword);
+		Assertions.assertEquals("Login", driver.getTitle());
+		loginPage.login(randomUserName, randomPassword);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+
+		homePage.switchToCredentialTab();
+		homePage.createCredential("url", "Atticus", "password");
+		webDriverWait.until(ExpectedConditions.alertIsPresent());
+		Alert alert = driver.switchTo().alert();
+		alert.accept();
+
+		WebElement matchedCredential = homePage.getCredential("url", "Atticus");
+		Boolean isCredentialFound = matchedCredential != null;
+		Assertions.assertEquals(isCredentialFound, true);
+	}
+	/**
+	 * Test adding, editing and deleting credentials
+	 * Write a Selenium test that logs in an existing user with existing credentials,
+	 * clicks the edit credential button on an existing credential,
+	 * changes the credential data, saves the changes,
+	 * and verifies that the changes appear in the credential list.
+	 */
+	@Test
+	public void testEditingCredential() {
+		driver.get("http://localhost:" + this.port + "/signup");
+		// Create a test account
+		String randomFirstName = RandomStringUtils.randomAlphabetic(10);
+		String randomLastName = RandomStringUtils.randomAlphabetic(10);
+		String randomUserName = RandomStringUtils.randomAlphabetic(10);
+		String randomPassword = RandomStringUtils.randomAlphabetic(10);
+		signupPage.signup(randomFirstName, randomLastName, randomUserName, randomPassword);
+		Assertions.assertEquals("Login", driver.getTitle());
+		loginPage.login(randomUserName, randomPassword);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+
+		homePage.switchToCredentialTab();
+		WebElement matchedCredential = homePage.getCredential("url", "Atticus");
+		Boolean isCredentialFound = matchedCredential != null;
+		if(isCredentialFound.equals(false)) {
+			homePage.createCredential("url", "Atticus", "password");
+			webDriverWait.until(ExpectedConditions.alertIsPresent());
+			Alert alert = driver.switchTo().alert();
+			alert.accept();
+			matchedCredential = homePage.getCredential("url", "Atticus");
+		}
+
+		homePage.editCredential(matchedCredential, "url", "Atticus Finch", "new password");
+
+		webDriverWait.until(ExpectedConditions.alertIsPresent());
+		Alert alert = driver.switchTo().alert();
+		alert.accept();
+
+		matchedCredential = homePage.getCredential("url", "Atticus");
+		Boolean isEditedCredentialFound = matchedCredential != null;
+		Assertions.assertEquals(isEditedCredentialFound, true);
+	}
+	/**
+	 * Test adding, editing and deleting credentials
+	 * Write a Selenium test that logs in an existing user with existing credentials,
+	 * clicks the delete credential button on an existing credential,
+	 * and verifies that the credential no longer appears in the credential list.
+	 */
+	@Test
+	public void testDeletingCredential() {
+		driver.get("http://localhost:" + this.port + "/signup");
+		// Create a test account
+		String randomFirstName = RandomStringUtils.randomAlphabetic(10);
+		String randomLastName = RandomStringUtils.randomAlphabetic(10);
+		String randomUserName = RandomStringUtils.randomAlphabetic(10);
+		String randomPassword = RandomStringUtils.randomAlphabetic(10);
+		signupPage.signup(randomFirstName, randomLastName, randomUserName, randomPassword);
+		Assertions.assertEquals("Login", driver.getTitle());
+		loginPage.login(randomUserName, randomPassword);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+
+		homePage.switchToCredentialTab();
+		WebElement matchedCredential = homePage.getCredential("url", "Atticus");
+		Boolean isCredentialFound = matchedCredential != null;
+		if(isCredentialFound.equals(false)) {
+			homePage.createCredential("url", "Atticus", "password");
+			webDriverWait.until(ExpectedConditions.alertIsPresent());
+			Alert alert = driver.switchTo().alert();
+			alert.accept();
+			matchedCredential = homePage.getCredential("url", "Atticus");
+		}
+
+		homePage.deleteCredential(matchedCredential);
+
+		webDriverWait.until(ExpectedConditions.alertIsPresent());
+		Alert alert = driver.switchTo().alert();
+		alert.accept();
+
+		matchedCredential = homePage.getCredential("url", "Atticus");
+		Boolean isEditedCredentialFound = matchedCredential != null;
+		Assertions.assertEquals(isEditedCredentialFound, false);
+	}
 }
