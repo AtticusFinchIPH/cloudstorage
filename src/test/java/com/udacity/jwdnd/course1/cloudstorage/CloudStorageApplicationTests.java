@@ -24,15 +24,16 @@ class CloudStorageApplicationTests {
 	private HomePage homePage;
 	@BeforeAll
 	static void beforeAll() {
-//		WebDriverManager.chromedriver().setup();
+		WebDriverManager.chromedriver().setup();
 		/* Incompatible Chrome version, so I need to download Chromium to test locally */
-		System.setProperty("webdriver.chrome.driver", "C:\\Users\\tranv\\Downloads\\Software\\chromedriver_win32\\chromedriver.exe");
-		chromeOptions = new ChromeOptions();
-		chromeOptions.setBinary("C:\\Users\\tranv\\Downloads\\Software\\chrome-win64\\chrome.exe");
+//		System.setProperty("webdriver.chrome.driver", "C:\\Users\\tranv\\Downloads\\Software\\chromedriver_win32\\chromedriver.exe");
+//		chromeOptions = new ChromeOptions();
+//		chromeOptions.setBinary("C:\\Users\\tranv\\Downloads\\Software\\chrome-win64\\chrome.exe");
 	}
 	@BeforeEach
 	public void beforeEach() {
-		driver = new ChromeDriver(chromeOptions);
+		driver = new ChromeDriver();
+//		driver = new ChromeDriver(chromeOptions);
 		webDriverWait = new WebDriverWait(driver, 2);
 		loginPage = new LoginPage(driver);
 		signupPage = new SignupPage(driver);
